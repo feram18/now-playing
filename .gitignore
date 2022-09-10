@@ -1,0 +1,14 @@
+# Spotipy Cache
+.cache
+
+# Submodule
+rpi-rgb-led-matrix
+
+### PyCharm ###
+.idea
+
+### PyCharm Patch ###
+*.iml
+modules.xml
+.idea/misc.xml
+*.ipr
