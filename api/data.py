@@ -14,6 +14,19 @@ SLOW_REFRESH_RATE = 30  # seconds
 
 @dataclass
 class Data:
+    """
+    Data class to fetch Spotify data
+
+    Attributes:
+        sp (spotipy.Spotify):           Spotify instance
+        user (model.User):              User instance
+        is_playing (bool):              Bool to indicate if user is currently active
+        track (model.Track):            Track currently playing
+        prev_track (model.Track):       Previously played track
+        last_updated (float):           Time data was last updated
+        refresh_rate (int):             Data refresh rate (in seconds)
+        new_data (bool):                Bool to indicate if new data was fetched
+    """
     def __init__(self):
         self.sp: Spotify = Spotify(auth_manager=spotify.oauth())
         self.user: User = field(init=False)
