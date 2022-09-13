@@ -1,11 +1,17 @@
 import argparse
 import json
 import logging
+import math
 import os
 from enum import Enum
+from io import BytesIO
+from typing import Tuple
 
-from PIL import ImageFont
+import numpy as np
+import requests
+from PIL import ImageFont, Image
 from rgbmatrix import RGBMatrixOptions
+from sklearn.cluster import KMeans
 
 
 class Color:
@@ -19,6 +25,7 @@ class Color:
     PINK = 255, 143, 255, 255
     BROWN = 65, 29, 0, 255
     GRAY = 112, 128, 144, 255
+    LIGHT_GRAY = 200, 200, 200, 255
     BLACK = 0, 0, 0, 255
     WHITE = 255, 255, 255, 255
 
@@ -57,12 +64,95 @@ def load_font(filename: str) -> ImageFont:
     logging.error(f"Couldn't find font {filename}")
 
 
+def off_screen(canvas_width: int, text_size: int) -> bool:
+    """
+    Determines if text will go off-screen
+    :param canvas_width: (int) Canvas width
+    :param text_size: (int) Text size in pixels
+    :return: off-screen: (bool)
+    """
+    return text_size > canvas_width
+
+
+def load_image_url(url: str, size: Tuple[int, int]) -> Image:
+    """
+    Load Image file from URL
+    :param url: (str) URL to image
+    :param size: (int, int) Image's maximum width and height
+    :return: image: (PIL.Image) Image file
+    """
+    response = requests.get(url)
+    if response.ok:
+        with Image.open(BytesIO(response.content)) as img:
+            img.thumbnail(size)
+            return img.convert('RGB')
+    logging.error(f'Could not get image at {url}')
+
+
+def get_background_color(img: Image) -> tuple:
+    """
+    Get best matching background color based on album cover
+
+    Adapted from https://github.com/davidkrantz/Colorfy
+    :param img: (PIL.Image) Album cover image
+    :return: (tuple) RGB values
+    """
+    img = np.asarray(img.resize((100, 100), Image.BILINEAR))
+    img = img.reshape((img.shape[0] * img.shape[1], 3))
+
+    clt = KMeans(n_clusters=8)
+    clt.fit(img)
+    centroids = clt.cluster_centers_
+
+    cf = [colorfulness(color[0], color[1], color[2]) for color in centroids]
+    max_colorful = np.max(cf)
+    rgb = centroids[np.argmax(cf)]
+
+    if max_colorful < 10:  # Colorfulness tolerance
+        return Color.LIGHT_GRAY  # Not colorful enough
+    return tuple(int(math.ceil(value)) for value in rgb)
+
+
+def colorfulness(r: int, g: int, b: int) -> float:
+    """
+    Returns a colorfulness index of given RGB combination.
+    Implementation of the colorfulness metric proposed by Hasler and Süsstrunk (2003)
+    in https://infoscience.epfl.ch/record/33994/files/HaslerS03.pdf.
+
+    Adapted from https://github.com/davidkrantz/Colorfy
+    :param r: (int) RED value
+    :param g: (int) GREEN value
+    :param b: (int) BLUE value
+    :return: (float) colorfulness metric
+    """
+    rg = np.absolute(r - g)
+    yb = np.absolute(0.5 * (r + g) - b)
+
+    # Compute the mean and standard deviation of both `rg` and `yb`
+    rg_mean, rg_std = (np.mean(rg), np.std(rg))
+    yb_mean, yb_std = (np.mean(yb), np.std(yb))
+
+    # Combine the mean and standard deviations
+    std_root = np.sqrt((rg_std ** 2) + (yb_std ** 2))
+    mean_root = np.sqrt((rg_mean ** 2) + (yb_mean ** 2))
+    return std_root + (0.3 * mean_root)
+
+
+def is_background_light(bg_color: tuple) -> bool:
+    """
+    Determine if the background color is light or dark, based on luminance
+    :param bg_color: (tuple) background color RGB values
+    :return: bool to indicate if background color is light
+    """
+    return ((bg_color[0] * 0.299) + (bg_color[1] * 0.587) + (bg_color[2] * 0.114)) / 255 > 0.5
+
+
 def args() -> argparse.Namespace:
     """
     CLI argument parser to configure matrix.
     :return: arguments: (argsparse.Namespace) Argument parser
     """
-    parser = argparse.ArgumentParser(prog='LED-Stock-Ticker')
+    parser = argparse.ArgumentParser(prog='Now-Playing')
 
     parser.add_argument('--led-rows',
                         action='store',
