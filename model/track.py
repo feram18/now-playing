@@ -8,5 +8,4 @@ class Track:
     artist: str
     album: str
     album_art_url: str
-    explicit: bool
     length: int  # [ms]

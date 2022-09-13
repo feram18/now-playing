@@ -81,7 +81,6 @@ class Data:
                            track['album']['artists'][0]['name'],
                            track['album']['name'],
                            track['album']['images'][0]['url'],
-                           track['explicit'],
                            track['duration_ms'])
 
     def needs_update(self) -> bool:
