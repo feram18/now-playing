@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 from spotipy import Spotify
 
-from auth import auth
+from auth import spotify
 from model.track import Track
 from model.user import User
 
@@ -15,7 +15,7 @@ SLOW_REFRESH_RATE = 30  # seconds
 @dataclass
 class Data:
     def __init__(self):
-        self.sp: Spotify = Spotify(auth_manager=auth.oauth())
+        self.sp: Spotify = Spotify(auth_manager=spotify.oauth())
         self.user: User = field(init=False)
         self.is_playing: bool = field(init=False)
         self.track: Track = None
