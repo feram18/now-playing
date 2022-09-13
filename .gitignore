@@ -1,6 +1,9 @@
 # Spotipy Cache
 .cache
 
+# Logs
+*.log
+
 # Submodule
 rpi-rgb-led-matrix
 
