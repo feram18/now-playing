@@ -1,3 +1,6 @@
+# Configuration File
+app.ini
+
 # Spotipy Cache
 .cache
 
