@@ -1,7 +1,9 @@
 import logging
+import signal
 import sys
 from logging.handlers import RotatingFileHandler
 
+import multitasking
 from PIL import Image, ImageDraw
 from rgbmatrix import RGBMatrix
 
@@ -38,4 +40,5 @@ if __name__ == '__main__':
     except Exception as e:
         logging.exception(SystemExit(e))
     finally:
+        signal.signal(signal.SIGINT, multitasking.killall)
         matrix.Clear()

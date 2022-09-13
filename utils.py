@@ -2,9 +2,35 @@ import argparse
 import json
 import logging
 import os
+from enum import Enum
 
 from PIL import ImageFont
 from rgbmatrix import RGBMatrixOptions
+
+
+class Color:
+    """Colors utility class (RGBA)"""
+    RED = 171, 0, 3, 255
+    ORANGE = 128, 128, 128, 255
+    YELLOW = 239, 178, 30, 255
+    GREEN = 124, 252, 0, 255
+    BLUE = 0, 45, 114, 255
+    PURPLE = 170, 40, 203, 255
+    PINK = 255, 143, 255, 255
+    BROWN = 65, 29, 0, 255
+    GRAY = 112, 128, 144, 255
+    BLACK = 0, 0, 0, 255
+    WHITE = 255, 255, 255, 255
+
+    DARK_PRIMARY = 21, 21, 21, 255
+    DARK_SECONDARY = 88, 88, 88, 255
+    LIGHT_PRIMARY = 250, 250, 250, 255
+    LIGHT_SECONDARY = 93, 93, 93, 255
+
+
+class Direction(Enum):
+    LEFT = 0,
+    RIGHT = 1
 
 
 def read_json(filename: str) -> dict:
