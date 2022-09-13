@@ -1,4 +1,6 @@
+import logging
 import time
+from dataclasses import dataclass, field
 
 from spotipy import Spotify
 
@@ -6,53 +8,68 @@ from auth import auth
 from model.track import Track
 from model.user import User
 
-REFRESH_RATE = 20  # seconds
+RAPID_REFRESH_RATE = 10  # seconds
+SLOW_REFRESH_RATE = 30  # seconds
 
 
+@dataclass
 class Data:
     def __init__(self):
         self.sp: Spotify = Spotify(auth_manager=auth.oauth())
-        self.user: User = self.user()
-        self.is_playing: bool = False
-        self.track: Track = self.now_playing()
-        self.last_updated: float = time.time()
+        self.user: User = field(init=False)
+        self.is_playing: bool = field(init=False)
+        self.track: Track = None
+        self.prev_track: Track = field(init=False)
+        self.last_updated: float = field(init=False)
+        self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
+        self.new_data: bool = self.update(True)  # force to initialize
 
-    def user(self):
-        """
-        Get user profile information
-        :return: User
-        """
-        me = self.sp.me()
-        return User(me['display_name'],
-                    me['id'],
-                    me['followers']['total'],
-                    me['images'][0]['url'])
-
-    def now_playing(self) -> Track:
-        """
-        Get user's currently playing track
-        :return: Track
-        """
-        np = self.sp.currently_playing()
-        return Track(np['item']['id'],
-                     np['item']['name'],
-                     np['item']['album']['artists'][0]['name'],
-                     np['item']['album']['name'],
-                     np['item']['album']['images'][0]['url'],
-                     np['item']['explicit'],
-                     np['item']['duration_ms'])
-
-    def update(self) -> bool:
+    def update(self, force: bool = False) -> bool:
         """
         Update data attributes
+        :param force: (bool) force update
         :return: bool to indicate if new data was fetched
         """
-        if self.needs_update():
-            last_track = self.track
-            self.track = self.now_playing()
+        if force or self.needs_update():
+            logging.debug('Checking for new data...')
+
+            self.get_user()
+            data = self.sp.currently_playing()
+
+            self.is_playing = bool(data.get('is_playing') if not None else False)
+            self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
+
+            self.prev_track = self.track
+            self.now_playing(data['item'])
             self.last_updated = time.time()
-            return last_track.id != self.track.id
-        return False
+
+            if self.prev_track:
+                return self.prev_track.id != self.track.id  # new data
+            return True  # just initialized
+        return False  # no new data
+
+    def get_user(self):
+        """
+        Get user profile information
+        """
+        me = self.sp.me()
+        self.user = User(me['display_name'],
+                         me['id'],
+                         me['followers']['total'],
+                         me['images'][0]['url'])
+
+    def now_playing(self, track: dict):
+        """
+        Get user's currently playing track
+        :param track: (dict) data dictionary
+        """
+        self.track = Track(track['id'],
+                           track['name'],
+                           track['album']['artists'][0]['name'],
+                           track['album']['name'],
+                           track['album']['images'][0]['url'],
+                           track['explicit'],
+                           track['duration_ms'])
 
     def needs_update(self) -> bool:
         """
@@ -60,4 +77,4 @@ class Data:
         :return: bool to indicate if update is needed
         """
         time_delta = time.time() - self.last_updated
-        return time_delta >= REFRESH_RATE
+        return time_delta >= self.refresh_rate
