@@ -1,6 +1,6 @@
 multitasking~=0.0.9
 numpy~=1.21.0
 pillow>=8.2.0
-requests~=2.25.1
+requests~=2.26
 scikit-learn~=1.1.2
 spotipy~=2.19.0
