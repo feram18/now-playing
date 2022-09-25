@@ -33,7 +33,11 @@ class Data:
         self.prev_track: Track = None
         self.last_updated: float = field(init=False)
         self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
-        self.new_data: bool = self.update(True)  # force to initialize
+        self.new_data: bool = False
+
+    def __post_init__(self):
+        self.get_user()
+        self.new_data = self.update(True)  # force to initialize
 
     def update(self, force: bool = False) -> bool:
         """
@@ -45,7 +49,6 @@ class Data:
             self.last_updated = time.time()
             logging.debug('Checking for new data...')
 
-            self.get_user()
             data = self.sp.currently_playing()
 
             try:
