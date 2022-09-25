@@ -28,14 +28,16 @@ class Data:
     def __init__(self):
         self.sp: Spotify = Spotify(auth_manager=spotify.oauth())
         self.user: User = field(init=False)
-        self.is_playing: bool = field(init=False)
+        self.is_playing: bool = False
         self.track: Track = None
         self.prev_track: Track = None
         self.last_updated: float = field(init=False)
         self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
         self.new_data: bool = False
+        self.initialize()
 
-    def __post_init__(self):
+    def initialize(self):
+        logging.debug('Initializing data...')
         self.get_user()
         self.new_data = self.update(True)  # force to initialize
 
