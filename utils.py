@@ -123,6 +123,15 @@ def load_image_url(url: str, size: Tuple[int, int]) -> Image:
     logging.error(f'Could not get image at {url}')
 
 
+def rgb_to_hex(rgb: tuple) -> str:
+    """
+    Convert RGB to HEX
+    :param rgb: (tuple) RGB value
+    :return: (str) HEX value
+    """
+    return '%02x%02x%02x' % rgb
+
+
 def get_background_color(img: Image) -> tuple:
     """
     Get best matching background color based on album cover
