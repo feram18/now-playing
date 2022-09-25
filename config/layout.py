@@ -2,9 +2,8 @@ from dataclasses import dataclass, field
 
 from PIL import ImageFont
 
+from constants import LAYOUT_FILE
 from utils import read_json, load_font
-
-LAYOUT_FILE = 'config/w{}h{}.json'
 
 
 @dataclass

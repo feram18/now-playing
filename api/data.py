@@ -5,11 +5,9 @@ from dataclasses import dataclass, field
 from spotipy import Spotify
 
 from auth import spotify
+from constants import RAPID_REFRESH_RATE, SLOW_REFRESH_RATE
 from model.track import Track
 from model.user import User
-
-RAPID_REFRESH_RATE = 10  # seconds
-SLOW_REFRESH_RATE = 60  # seconds
 
 
 @dataclass
@@ -44,6 +42,7 @@ class Data:
         :return: bool to indicate if new data was fetched
         """
         if force or self.needs_update():
+            self.last_updated = time.time()
             logging.debug('Checking for new data...')
 
             self.get_user()
@@ -59,7 +58,6 @@ class Data:
                 self.is_playing = False
                 logging.warning('User currently not playing')
             self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
-            self.last_updated = time.time()
             return True  # just initialized
         return False  # no new data
 

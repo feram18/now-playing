@@ -7,9 +7,8 @@ from rgbmatrix import RGBMatrix
 from PIL import Image, ImageDraw, ImageFont
 
 from config.layout import Layout
+from constants import SCROLL_SPEED
 from utils import Direction
-
-SCROLL_SPEED = 0.5
 
 
 class Renderer(ABC):
