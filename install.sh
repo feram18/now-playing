@@ -28,6 +28,9 @@ main() {
 
   installMatrixLibrary
 
+  chmod +x update.sh
+  ./update.sh
+
   echo -e "\n$(tput setaf 2)If there are no errors shown above, installation was successful."
   echo "$(tput setaf 7)To make sure your matrix is working properly, execute the samples located in ./rpi-rgb-led-matrix/bindings/python/samples"
 
