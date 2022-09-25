@@ -4,6 +4,7 @@ import time
 from PIL import Image
 
 from api.data import Data
+from constants import RAPID_REFRESH_RATE
 from model.track import Track
 from renderer.renderer import Renderer
 from utils import Color, load_image_url, off_screen, get_background_color, is_background_light, Position, align_image
@@ -14,16 +15,16 @@ class NowPlaying(Renderer):
     Now Playing Renderer
 
     Arguments:
-        data (api.Data):                    Data instance
+        data (api.Data):                Data instance
 
     Attributes:
-        track (model.Track):                Track instance
-        coords (dict):                      Coordinates dictionary
-        album_art (PIL.Image):              Album art image
-        background (utils.Color):           Background color
-        primary_color (utils.Color):        Primary text color
-        secondary_color (utils.Color):      Secondary text color
-        refresh (bool):                     Bool to indicate if canvas needs to refresh
+        track (model.Track):            Track instance
+        coords (dict):                  Coordinates dictionary
+        album_art (PIL.Image):          Album art image
+        background (tuple):             Background color
+        primary_color (tuple):          Primary text color
+        secondary_color (tuple):        Secondary text color
+        refresh (bool):                 Bool to indicate if canvas needs to refresh
     """
     def __init__(self, matrix, canvas, draw, layout, data):
         super().__init__(matrix, canvas, draw, layout)
@@ -31,11 +32,10 @@ class NowPlaying(Renderer):
         self.track: Track = self.data.track
         self.coords: dict = self.layout.coords['now_playing']
         self.album_art: Image = None
-        self.background: Color = Color.BLACK
-        self.primary_color: Color = Color.WHITE
-        self.secondary_color: Color = Color.GRAY
+        self.background: tuple = Color.BLACK
+        self.primary_color: tuple = Color.WHITE
+        self.secondary_color: tuple = Color.GRAY
         self.refresh: bool = True
-        self.render()
 
     def render(self):
         while self.data.is_playing:
@@ -46,6 +46,7 @@ class NowPlaying(Renderer):
                 self.render_title()
                 self.render_artist()
                 self.matrix.SetImage(self.canvas)
+            time.sleep(RAPID_REFRESH_RATE)
             self.refresh = self.data.update()
 
     def render_background(self):
@@ -57,12 +58,13 @@ class NowPlaying(Renderer):
                            self.matrix.height,
                            Position[self.coords['album_art']['position']['x'].upper()],
                            Position[self.coords['album_art']['position']['y'].upper()])
-        lo, to = self.coords['album_art']['offset']['left'], self.coords['album_art']['offset']['top']
-        self.canvas.paste(self.album_art, (x + lo, y + to))
+        xo = self.coords['album_art']['offset']['x']
+        yo = self.coords['album_art']['offset']['y']
+        self.canvas.paste(self.album_art, (x + xo, y + yo))
 
     def render_title(self):
-        x, y = self.coords['title']['x'], \
-               self.coords['title']['y']
+        x = self.coords['title']['x']
+        y = self.coords['title']['y']
         text_off_screen = off_screen((self.matrix.width - x), self.font.getsize(self.track.name)[0])
         if text_off_screen:
             self.scrolling = True
@@ -71,8 +73,8 @@ class NowPlaying(Renderer):
             self.draw.text((x, y), self.track.name, fill=self.primary_color, font=self.font)
 
     def render_artist(self):
-        x, y = self.coords['artist']['x'], \
-               self.coords['artist']['y']
+        x = self.coords['artist']['x']
+        y = self.coords['artist']['y']
         artist = self.track.artist
         text_off_screen = off_screen((self.matrix.width - x),
                                      self.font.getsize(self.track.artist)[0])
