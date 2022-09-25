@@ -9,6 +9,7 @@ from rgbmatrix import RGBMatrix
 
 from api.data import Data
 from config.layout import Layout
+from renderer.loading import Loading
 from renderer.now_playing import NowPlaying
 from utils import led_matrix_options, args
 from version import __version__
@@ -18,6 +19,7 @@ def main():
     print(f'\U0001F3B5 Now-Playing - v{__version__} ({matrix.width}x{matrix.height})')
 
     layout = Layout(matrix.width, matrix.height)
+    Loading(matrix, canvas, draw, layout)
     data = Data()
     NowPlaying(matrix, canvas, draw, layout, data)
 
@@ -41,6 +43,7 @@ if __name__ == '__main__':
     matrix = RGBMatrix(options=led_matrix_options(args()))
     canvas = Image.new('RGB', (matrix.width, matrix.height))
     draw = ImageDraw.Draw(canvas)
+    matrix.SetImage(canvas)
 
     try:
         main()
