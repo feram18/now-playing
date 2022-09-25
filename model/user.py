@@ -7,3 +7,4 @@ class User:
     id: str
     followers: int
     icon_url: str
+    uri: str

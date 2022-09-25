@@ -9,7 +9,7 @@ from model.track import Track
 from model.user import User
 
 RAPID_REFRESH_RATE = 10  # seconds
-SLOW_REFRESH_RATE = 30  # seconds
+SLOW_REFRESH_RATE = 60  # seconds
 
 
 @dataclass
@@ -32,7 +32,7 @@ class Data:
         self.user: User = field(init=False)
         self.is_playing: bool = field(init=False)
         self.track: Track = None
-        self.prev_track: Track = field(init=False)
+        self.prev_track: Track = None
         self.last_updated: float = field(init=False)
         self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
         self.new_data: bool = self.update(True)  # force to initialize
@@ -49,15 +49,17 @@ class Data:
             self.get_user()
             data = self.sp.currently_playing()
 
-            self.is_playing = bool(data.get('is_playing') if not None else False)
+            try:
+                self.is_playing = bool(data['is_playing'])
+                self.prev_track = self.track
+                self.now_playing(data['item'])
+                if self.prev_track:
+                    return self.prev_track.id != self.track.id  # new data
+            except TypeError:
+                self.is_playing = False
+                logging.warning('User currently not playing')
             self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
-
-            self.prev_track = self.track
-            self.now_playing(data['item'])
             self.last_updated = time.time()
-
-            if self.prev_track:
-                return self.prev_track.id != self.track.id  # new data
             return True  # just initialized
         return False  # no new data
 
@@ -69,7 +71,8 @@ class Data:
         self.user = User(me['display_name'],
                          me['id'],
                          me['followers']['total'],
-                         me['images'][0]['url'])
+                         me['images'][0]['url'],
+                         me['uri'])
 
     def now_playing(self, track: dict):
         """
@@ -81,7 +84,8 @@ class Data:
                            track['album']['artists'][0]['name'],
                            track['album']['name'],
                            track['album']['images'][0]['url'],
-                           track['duration_ms'])
+                           track['duration_ms'],
+                           track['uri'])
 
     def needs_update(self) -> bool:
         """

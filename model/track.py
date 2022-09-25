@@ -9,3 +9,4 @@ class Track:
     album: str
     album_art_url: str
     length: int  # [ms]
+    uri: str
