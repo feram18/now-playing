@@ -3,7 +3,7 @@ import json
 import logging
 import math
 import os
-from enum import Enum
+from enum import Enum, auto
 from io import BytesIO
 from typing import Tuple
 
@@ -16,28 +16,36 @@ from sklearn.cluster import KMeans
 
 class Color:
     """Colors utility class (RGBA)"""
-    RED = 171, 0, 3, 255
-    ORANGE = 128, 128, 128, 255
-    YELLOW = 239, 178, 30, 255
-    GREEN = 124, 252, 0, 255
-    BLUE = 0, 45, 114, 255
-    PURPLE = 170, 40, 203, 255
-    PINK = 255, 143, 255, 255
-    BROWN = 65, 29, 0, 255
-    GRAY = 112, 128, 144, 255
-    LIGHT_GRAY = 200, 200, 200, 255
-    BLACK = 0, 0, 0, 255
-    WHITE = 255, 255, 255, 255
+    RED = (171, 0, 3, 255)
+    ORANGE = (128, 128, 128, 255)
+    YELLOW = (239, 178, 30, 255)
+    GREEN = (124, 252, 0, 255)
+    BLUE = (0, 45, 114, 255)
+    PURPLE = (170, 40, 203, 255)
+    PINK = (255, 143, 255, 255)
+    BROWN = (65, 29, 0, 255)
+    GRAY = (112, 128, 144, 255)
+    LIGHT_GRAY = (200, 200, 200, 255)
+    BLACK = (0, 0, 0, 255)
+    WHITE = (255, 255, 255, 255)
 
-    DARK_PRIMARY = 21, 21, 21, 255
-    DARK_SECONDARY = 88, 88, 88, 255
-    LIGHT_PRIMARY = 250, 250, 250, 255
-    LIGHT_SECONDARY = 93, 93, 93, 255
+    DARK_PRIMARY = (21, 21, 21, 255)
+    DARK_SECONDARY = (88, 88, 88, 255)
+    LIGHT_PRIMARY = (250, 250, 250, 255)
+    LIGHT_SECONDARY = (93, 93, 93, 255)
 
 
 class Direction(Enum):
-    LEFT = 0,
-    RIGHT = 1
+    LEFT = auto()
+    RIGHT = auto()
+
+
+class Position(Enum):
+    LEFT = auto()
+    TOP = auto()
+    RIGHT = auto()
+    BOTTOM = auto()
+    CENTER = auto()
 
 
 def read_json(filename: str) -> dict:
@@ -145,6 +153,68 @@ def is_background_light(bg_color: tuple) -> bool:
     :return: bool to indicate if background color is light
     """
     return ((bg_color[0] * 0.299) + (bg_color[1] * 0.587) + (bg_color[2] * 0.114)) / 255 > 0.5
+
+
+def align_text(text_size: Tuple[int, int],
+               col_width: int = 0, col_height: int = 0,
+               x: Position = Position.CENTER, y: Position = Position.CENTER) -> (int, int):
+    """
+    Calculate x, y coords to align text on canvas
+    :param text_size:
+    :param x: Text's horizontal position
+    :param y: Text's vertical position
+    :param col_width: Column's width
+    :param col_height: Column's height
+    :return: x, y: Coordinates
+    """
+
+    # x: horizontal position
+    if x == Position.RIGHT:
+        x = col_width - text_size[0]
+    elif x == Position.CENTER:
+        x = abs(col_width//2 - text_size[0]//2)
+    elif x == Position.LEFT:
+        x = 0
+
+    # y: vertical position
+    if y == Position.CENTER:
+        y = abs(col_height//2 - text_size[1]//2)
+    elif y == Position.BOTTOM:
+        y = col_height - text_size[1]
+    elif y == Position.TOP:
+        y = 0
+
+    return x, y
+
+
+def align_image(image: Image,
+                col_width: int = 0, col_height: int = 0,
+                x: Position = Position.CENTER, y: Position = Position.CENTER) -> (int, int):
+    """
+    Calculate the x, y offsets to align image on canvas
+    :param image: Image to align
+    :param x: Image horizontal position
+    :param y: Image vertical position
+    :param col_width: Column's width
+    :param col_height: Column's height
+    :return: x, y: Coordinate offsets
+    """
+
+    if x == Position.RIGHT:
+        x = col_width - image.width
+    elif x == Position.CENTER:
+        x = abs(col_width//2 - image.width//2)
+    elif x == Position.LEFT:
+        x = 0
+
+    if y == Position.CENTER:
+        y = abs(col_height//2 - image.height//2)
+    elif y == Position.BOTTOM:
+        y = col_height - image.height
+    elif y == Position.TOP:
+        y = 0
+
+    return x, y
 
 
 def args() -> argparse.Namespace:
