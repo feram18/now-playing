@@ -82,6 +82,32 @@ def off_screen(canvas_width: int, text_size: int) -> bool:
     return text_size > canvas_width
 
 
+def load_image(filename: str,
+               size: Tuple[int, int],
+               background: tuple = Color.BLACK) -> Image:
+    """
+    Load Image file from local file's path
+    :param filename: (str) Path to the image file
+    :param size: (int, int) Image's maximum width and height
+    :param background: (Color) Background color for PNG images
+    :return: image: (PIL.Image) Image file
+    """
+    if os.path.isfile(filename):
+        with Image.open(filename) as original:
+            if '.png' in filename:
+                original = original.crop(original.getbbox())  # Non-empty pixels
+                image = Image.new('RGB',  # Background img
+                                  original.size,
+                                  background)
+                image.paste(original)  # Paste original on background
+                image.thumbnail(size)  # Resize
+                return image
+            else:  # Non-transparent images
+                original.thumbnail(size)
+                return original.convert('RGB')
+    logging.error(f"Couldn't find image {filename}")
+
+
 def load_image_url(url: str, size: Tuple[int, int]) -> Image:
     """
     Load Image file from URL
