@@ -10,7 +10,7 @@ from rgbmatrix import RGBMatrix
 from api.data import Data
 from config.layout import Layout
 from renderer.loading import Loading
-from renderer.now_playing import NowPlaying
+from renderer.main import MainRenderer
 from utils import led_matrix_options, args
 from version import __version__
 
@@ -21,7 +21,7 @@ def main():
     layout = Layout(matrix.width, matrix.height)
     Loading(matrix, canvas, draw, layout)
     data = Data()
-    NowPlaying(matrix, canvas, draw, layout, data)
+    MainRenderer(matrix, canvas, draw, layout, data)
 
 
 if __name__ == '__main__':
