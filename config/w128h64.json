@@ -1,0 +1,65 @@
+{
+	"defaults": {
+		"font":  "assets/fonts/4x6.pil"
+	},
+	"coords": {
+		"loading": {
+			"image": {
+				"size": {
+					"width": 120,
+					"height": 45
+				}
+			}
+		},
+		"now_playing": {
+			"album_art": {
+				"size": {
+					"width": 40,
+					"height": 40
+				},
+				"position": {
+					"x": "left",
+					"y": "center"
+				},
+				"offset": {
+					"x": 2,
+					"y": 0
+				}
+			},
+			"title": {
+				"x": 44,
+				"y": 25
+			},
+			"artist": {
+				"x": 44,
+				"y": 34
+			}
+		},
+		"user": {
+			"code": {
+				"size": {
+					"width": 120,
+					"height": 30
+				},
+				"position": {
+					"x": "center",
+					"y": "center"
+				},
+				"offset": {
+					"x": 0,
+					"y": 0
+				}
+			},
+			"name": {
+				"position": {
+					"x": "center",
+					"y": "top"
+				},
+				"offset": {
+					"x": 0,
+					"y": 6
+				}
+			}
+		}
+	}
+}
