@@ -7,7 +7,8 @@ from api.data import Data
 from constants import RAPID_REFRESH_RATE
 from model.track import Track
 from renderer.renderer import Renderer
-from utils import Color, load_image_url, off_screen, get_background_color, is_background_light, Position, align_image
+from utils import Color, load_image_url, off_screen, get_background_color, is_background_light, Position, align_image, \
+    multiline_text
 
 
 class NowPlaying(Renderer):
@@ -48,6 +49,7 @@ class NowPlaying(Renderer):
                 self.matrix.SetImage(self.canvas)
             time.sleep(RAPID_REFRESH_RATE)
             self.refresh = self.data.update()
+        self.scrolling = False
 
     def render_background(self):
         self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), fill=self.background)
@@ -79,9 +81,8 @@ class NowPlaying(Renderer):
         text_off_screen = off_screen((self.matrix.width - x),
                                      self.font.getsize(self.track.artist)[0])
         if text_off_screen:
-            # TODO: Smart Split OR Scroll
-            artist = '\n'.join(artist.rsplit(' ', 1))
-        self.draw.text((x, y), artist, fill=self.secondary_color, font=self.font, spacing=1)
+            artist = multiline_text(artist, ((self.matrix.width - x - 2) // self.font.getsize('0')[0]))
+        self.draw.text((x, y), artist, fill=self.secondary_color, font=self.font, spacing=0)
 
     def setup(self):
         self.track = self.data.track

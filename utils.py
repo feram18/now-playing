@@ -190,6 +190,25 @@ def is_background_light(bg_color: tuple) -> bool:
     return ((bg_color[0] * 0.299) + (bg_color[1] * 0.587) + (bg_color[2] * 0.114)) / 255 > 0.5
 
 
+def multiline_text(text: str, max_len: int) -> str:
+    """
+    Split a string of text into multiple lines based on a max character length value.
+    :param text: (str) text to split
+    :param max_len: (int) maximum line length
+    :return: (str) multi-lined string
+    """
+    words = iter(text.split())
+    lines, current = '', next(words)
+    for word in words:
+        if len(current) + 1 + len(word) > max_len:  # add new line
+            lines += current + '\n'
+            current = word
+        else:  # add to current line
+            current += " " + word
+    lines += current  # add last line
+    return lines
+
+
 def align_text(text_size: Tuple[int, int],
                col_width: int = 0, col_height: int = 0,
                x: Position = Position.CENTER, y: Position = Position.CENTER) -> (int, int):
