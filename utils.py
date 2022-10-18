@@ -29,10 +29,10 @@ class Color:
     BLACK = (0, 0, 0, 255)
     WHITE = (255, 255, 255, 255)
 
-    DARK_PRIMARY = (21, 21, 21, 255)
-    DARK_SECONDARY = (88, 88, 88, 255)
+    DARK_PRIMARY = (0, 0, 0, 255)
+    DARK_SECONDARY = (40, 40, 40, 255)
     LIGHT_PRIMARY = (250, 250, 250, 255)
-    LIGHT_SECONDARY = (93, 93, 93, 255)
+    LIGHT_SECONDARY = (170, 170, 170, 255)
 
 
 class Direction(Enum):
