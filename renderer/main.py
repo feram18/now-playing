@@ -1,3 +1,7 @@
+import signal
+
+import multitasking
+
 from api.data import Data
 from renderer.now_playing import NowPlaying
 from renderer.profile import Profile
@@ -13,9 +17,12 @@ class MainRenderer(Renderer):
         self.render()
 
     def render(self):
-        while True:
-            self.render_now_playing()
-            self.render_profile()
+        try:
+            while True:
+                self.render_now_playing()
+                self.render_profile()
+        except KeyboardInterrupt:
+            signal.signal(signal.SIGINT, multitasking.killall)
 
     def render_now_playing(self):
         self.np.render()
