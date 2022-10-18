@@ -31,8 +31,11 @@
 				"y": 18
 			},
 			"artist": {
-				"x": 44,
-				"y": 31
+				"position": {
+					"x": 44,
+					"y": 31
+				},
+				"line_spacing": -3
 			}
 		},
 		"user": {

@@ -52,7 +52,7 @@ class NowPlaying(Renderer):
         self.scrolling = False
 
     def render_background(self):
-        self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), fill=self.background)
+        self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), self.background)
 
     def render_album_art(self):
         x, y = align_image(self.album_art,
@@ -72,17 +72,17 @@ class NowPlaying(Renderer):
             self.scrolling = True
             self.scroll_text(self.track.name, self.primary_color, self.background, (x, y))
         else:
-            self.draw.text((x, y), self.track.name, fill=self.primary_color, font=self.font)
+            self.draw.text((x, y), self.track.name, self.primary_color, self.font)
 
     def render_artist(self):
-        x = self.coords['artist']['x']
-        y = self.coords['artist']['y']
+        x = self.coords['artist']['position']['x']
+        y = self.coords['artist']['position']['y']
         artist = self.track.artist
         text_off_screen = off_screen((self.matrix.width - x),
                                      self.font.getsize(self.track.artist)[0])
         if text_off_screen:
             artist = multiline_text(artist, ((self.matrix.width - x - 2) // self.font.getsize('0')[0]))
-        self.draw.text((x, y), artist, fill=self.secondary_color, font=self.font, spacing=0)
+        self.draw.text((x, y), artist, self.secondary_color, self.font, spacing=self.coords['artist']['line_spacing'])
 
     def setup(self):
         self.track = self.data.track
