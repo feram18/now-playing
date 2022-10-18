@@ -200,7 +200,7 @@ def multiline_text(text: str, max_len: int) -> str:
     words = iter(text.split())
     lines, current = '', next(words)
     for word in words:
-        if len(current) + 1 + len(word) > max_len:  # add new line
+        if len(current) + 1 + len(word) > max_len - 1:  # add new line
             lines += current + '\n'
             current = word
         else:  # add to current line
@@ -210,8 +210,10 @@ def multiline_text(text: str, max_len: int) -> str:
 
 
 def align_text(text_size: Tuple[int, int],
-               col_width: int = 0, col_height: int = 0,
-               x: Position = Position.CENTER, y: Position = Position.CENTER) -> (int, int):
+               col_width: int = 0,
+               col_height: int = 0,
+               x: Position = Position.CENTER,
+               y: Position = Position.CENTER) -> (int, int):
     """
     Calculate x, y coords to align text on canvas
     :param text_size:
@@ -242,8 +244,10 @@ def align_text(text_size: Tuple[int, int],
 
 
 def align_image(image: Image,
-                col_width: int = 0, col_height: int = 0,
-                x: Position = Position.CENTER, y: Position = Position.CENTER) -> (int, int):
+                col_width: int = 0,
+                col_height: int = 0,
+                x: Position = Position.CENTER,
+                y: Position = Position.CENTER) -> (int, int):
     """
     Calculate the x, y offsets to align image on canvas
     :param image: Image to align
