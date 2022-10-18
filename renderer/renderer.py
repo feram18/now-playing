@@ -19,10 +19,10 @@ class Renderer(ABC):
         matrix (rgbmatrix.RGBMatrix):       RGBMatrix instance
         canvas (PIL.Image):                 Image canvas associated with matrix
         draw (PIL.ImageDraw):               ImageDraw instance
-        layout (config.Layout):             Layout instance
+        layout (config.Layout):              Layout instance
 
     Attributes:
-        font (PIL.ImageFont):               Default font
+        font (PIL.ImageFont):               Text font
     """
 
     def __init__(self, matrix, canvas, draw, layout):
@@ -53,8 +53,8 @@ class Renderer(ABC):
         new_direction = True
 
         while self.scrolling is True:
-            self.draw.rectangle((start_pos, end), fill=bg_color)
-            self.draw.text(start_pos, shortened_text, fill=text_color, font=self.font)
+            self.draw.rectangle((start_pos, end), bg_color)
+            self.draw.text(start_pos, shortened_text, text_color, self.font)
             self.matrix.SetImage(self.canvas)
 
             length = self.font.getsize(shortened_text)[0] + start_pos[0]

@@ -26,7 +26,7 @@ class Profile(Renderer):
             self.data.update()
 
     def render_background(self):
-        self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), fill=Color.BLACK)
+        self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), Color.BLACK)
 
     def render_name(self):
         x, y = align_text(self.font.getsize(self.user.name),
@@ -35,7 +35,7 @@ class Profile(Renderer):
                           Position[self.coords['name']['position']['y'].upper()])
         xo = self.coords['name']['offset']['x']
         yo = self.coords['name']['offset']['y']
-        self.draw.text((x + xo, y + yo), self.user.name, fill=Color.WHITE, font=self.font)
+        self.draw.text((x + xo, y + yo), self.user.name, Color.WHITE, self.font)
 
     def render_code(self):
         icon = load_image_url(self.user.icon_url, (64, 64))

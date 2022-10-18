@@ -26,7 +26,7 @@ class Loading(Renderer):
                           self.matrix.height,
                           Position.CENTER,
                           Position.BOTTOM)
-        self.draw.text((x, y), __version__, fill=Color.ORANGE, font=self.font)
+        self.draw.text((x, y), __version__, Color.ORANGE, self.font)
 
     def render_logo(self):
         logo = load_image('assets/img/spotify.png',
