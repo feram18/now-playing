@@ -1,6 +1,6 @@
 {
 	"defaults": {
-		"font":  "assets/fonts/4x6.pil"
+		"font":  "assets/fonts/7x13.pil"
 	},
 	"coords": {
 		"loading": {
@@ -28,11 +28,11 @@
 			},
 			"title": {
 				"x": 44,
-				"y": 25
+				"y": 18
 			},
 			"artist": {
 				"x": 44,
-				"y": 34
+				"y": 31
 			}
 		},
 		"user": {
@@ -57,7 +57,7 @@
 				},
 				"offset": {
 					"x": 0,
-					"y": 6
+					"y": 3
 				}
 			}
 		}
