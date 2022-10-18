@@ -34,6 +34,7 @@ class Data:
         self.last_updated: float = field(init=False)
         self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
         self.new_data: bool = False
+        self.inactivity: float = 0
         self.initialize()
 
     def initialize(self):
@@ -57,11 +58,14 @@ class Data:
                 self.is_playing = bool(data['is_playing'])
                 self.prev_track = self.track
                 self.now_playing(data['item'])
+                self.inactivity = 0  # reset inactivity timer
                 if self.prev_track:
                     return self.prev_track.id != self.track.id  # new data
             except TypeError:
                 self.is_playing = False
-                logging.warning('Stopped playback')
+                if self.inactivity == 0:  # start inactivity timer
+                    self.inactivity = time.time()
+                    logging.warning('Stopped playback')
             self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
             return True  # just initialized
         return False  # no new data
