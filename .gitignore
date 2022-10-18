@@ -7,6 +7,9 @@ app.ini
 # Logs
 *.log
 
+# BDF Fonts
+assets/fonts/*.bdf
+
 # Submodule
 rpi-rgb-led-matrix
 
