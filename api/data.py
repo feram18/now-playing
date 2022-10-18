@@ -61,7 +61,7 @@ class Data:
                     return self.prev_track.id != self.track.id  # new data
             except TypeError:
                 self.is_playing = False
-                logging.warning('User currently not playing')
+                logging.warning('Stopped playback')
             self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
             return True  # just initialized
         return False  # no new data
