@@ -29,13 +29,13 @@ class Profile(Renderer):
         self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), Color.BLACK)
 
     def render_name(self):
-        x, y = align_text(self.font.getsize(self.user.name),
+        x, y = align_text(self.layout.primary_font.getsize(self.user.name),
                           self.matrix.width, self.matrix.height,
                           Position[self.coords['name']['position']['x'].upper()],
                           Position[self.coords['name']['position']['y'].upper()])
         xo = self.coords['name']['offset']['x']
         yo = self.coords['name']['offset']['y']
-        self.draw.text((x + xo, y + yo), self.user.name, Color.WHITE, self.font)
+        self.draw.text((x + xo, y + yo), self.user.name, Color.WHITE, self.layout.primary_font)
 
     def render_code(self):
         icon = load_image_url(self.user.icon_url, (64, 64))

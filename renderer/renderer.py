@@ -22,7 +22,7 @@ class Renderer(ABC):
         layout (config.Layout):              Layout instance
 
     Attributes:
-        font (PIL.ImageFont):               Text font
+        scrolling (bool):                   Boolean to indicate if text is scrolling
     """
 
     def __init__(self, matrix, canvas, draw, layout):
@@ -30,7 +30,6 @@ class Renderer(ABC):
         self.canvas: Image = canvas
         self.draw: ImageDraw = draw
         self.layout: Layout = layout
-        self.font: ImageFont = self.layout.font
         self.scrolling: bool = False
 
     @abstractmethod
@@ -38,15 +37,21 @@ class Renderer(ABC):
         pass
 
     @multitasking.task
-    def scroll_text(self, text: str, text_color: tuple, bg_color: tuple, start_pos: Tuple[int, int]):
+    def scroll_text(self,
+                    text: str,
+                    text_color: tuple,
+                    font: ImageFont,
+                    bg_color: tuple,
+                    start_pos: Tuple[int, int]):
         """
         Scroll string of text on canvas
         :param text: (str) text to scroll
         :param text_color: (tuple) text font color
+        :param font: (ImageFont) font to render text
         :param bg_color: (tuple) text background color
         :param start_pos: (int) text starting x-position
         """
-        end = (self.matrix.width, start_pos[1] + self.font.getsize(text)[1])
+        end = (self.matrix.width, start_pos[1] + font.getsize(text)[1])
         shortened_text = text
         removed_chars = []
         direction = Direction.LEFT
@@ -54,10 +59,10 @@ class Renderer(ABC):
 
         while self.scrolling is True:
             self.draw.rectangle((start_pos, end), bg_color)
-            self.draw.text(start_pos, shortened_text, text_color, self.font)
+            self.draw.text(start_pos, shortened_text, text_color, font)
             self.matrix.SetImage(self.canvas)
 
-            length = self.font.getsize(shortened_text)[0] + start_pos[0]
+            length = font.getsize(shortened_text)[0] + start_pos[0]
 
             if length < self.matrix.width:  # Check if end of text is now visible
                 direction = Direction.RIGHT
