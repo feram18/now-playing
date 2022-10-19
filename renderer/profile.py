@@ -1,7 +1,8 @@
+import logging
 import time
 
 from api.data import Data
-from constants import SLOW_REFRESH_RATE, SPOTIFY_CODE_URL
+from constants import SLOW_REFRESH_RATE, SPOTIFY_CODE_URL, INACTIVITY_TIMEOUT
 from model.user import User
 from renderer.renderer import Renderer
 from utils import align_text, Position, Color, load_image_url, get_background_color, is_background_light, rgb_to_hex, \
@@ -14,16 +15,19 @@ class Profile(Renderer):
         self.data: Data = data
         self.coords: dict = self.layout.coords['user']
         self.user: User = self.data.user
+        self.inactivity: float = 0
 
     def render(self):
+        self.inactivity = time.time()
         self.render_background()
         self.render_name()
         self.render_code()
         self.matrix.SetImage(self.canvas)
 
-        while not self.data.is_playing:
+        while not self.data.is_playing and not self.timeout():
             time.sleep(SLOW_REFRESH_RATE)
             self.data.update()
+        self.inactivity = 0
 
     def render_background(self):
         self.draw.rectangle(((0, 0), (self.matrix.width, self.matrix.height)), Color.BLACK)
@@ -55,3 +59,11 @@ class Profile(Renderer):
         xo = self.coords['code']['offset']['x']
         yo = self.coords['code']['offset']['y']
         self.canvas.paste(code, (x + xo, y + yo))
+
+    def timeout(self) -> bool:
+        if self.inactivity > 0:
+            if time.time() - self.inactivity >= INACTIVITY_TIMEOUT:
+                self.data.timeout = True
+                logging.warning('Inactivity timeout')
+                return True
+        return False

@@ -1,7 +1,4 @@
-import time
-
 from api.data import Data
-from constants import INACTIVITY_TIMEOUT
 from renderer.now_playing import NowPlaying
 from renderer.profile import Profile
 from renderer.renderer import Renderer
@@ -16,7 +13,7 @@ class MainRenderer(Renderer):
         self.render()
 
     def render(self):
-        while not self.timeout(self.data.inactivity):
+        while not self.data.timeout:
             self.render_now_playing()
             self.render_profile()
 
@@ -25,9 +22,3 @@ class MainRenderer(Renderer):
 
     def render_profile(self):
         self.profile.render()
-
-    @staticmethod
-    def timeout(inactivity: float) -> bool:
-        if inactivity > 0:
-            return time.time() - inactivity >= INACTIVITY_TIMEOUT
-        return False
