@@ -30,8 +30,7 @@ class Loading(Renderer):
 
     def render_logo(self):
         logo = load_image('assets/img/spotify.png',
-                          (self.coords['image']['size']['width'],
-                           self.coords['image']['size']['height']))
+                          self.coords['image']['size'])
         x, y = align_image(logo,
                            self.matrix.width,
                            self.matrix.height)

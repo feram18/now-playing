@@ -35,11 +35,11 @@ class Profile(Renderer):
     def render_name(self):
         x, y = align_text(self.layout.primary_font.getsize(self.user.name),
                           self.matrix.width, self.matrix.height,
-                          Position[self.coords['name']['position']['x'].upper()],
-                          Position[self.coords['name']['position']['y'].upper()])
-        xo = self.coords['name']['offset']['x']
-        yo = self.coords['name']['offset']['y']
-        self.draw.text((x + xo, y + yo), self.user.name, Color.WHITE, self.layout.primary_font)
+                          Position(self.coords['name']['position']['x']),
+                          Position(self.coords['name']['position']['y']))
+        x += self.coords['name']['offset']['x']
+        y += self.coords['name']['offset']['y']
+        self.draw.text((x, y), self.user.name, Color.WHITE, self.layout.primary_font)
 
     def render_code(self):
         icon = load_image_url(self.user.icon_url, (64, 64))
@@ -47,23 +47,20 @@ class Profile(Renderer):
         color = 'black' if is_background_light(bg_color) else 'white'
 
         url = SPOTIFY_CODE_URL.format(rgb_to_hex(bg_color), color, self.user.uri)
-        width = self.coords['code']['size']['width']
-        height = self.coords['code']['size']['height']
-        code = load_image_url(url, (width, height))
+        code = load_image_url(url, self.coords['code']['size'])
 
         x, y = align_image(code,
                            self.matrix.width,
                            self.matrix.height,
-                           Position[self.coords['code']['position']['x'].upper()],
-                           Position[self.coords['code']['position']['y'].upper()])
-        xo = self.coords['code']['offset']['x']
-        yo = self.coords['code']['offset']['y']
-        self.canvas.paste(code, (x + xo, y + yo))
+                           Position(self.coords['code']['position']['x']),
+                           Position(self.coords['code']['position']['y']))
+        x += self.coords['code']['offset']['x']
+        y += self.coords['code']['offset']['y']
+        self.canvas.paste(code, (x, y))
 
     def timeout(self) -> bool:
         if self.inactivity > 0:
             if time.time() - self.inactivity >= INACTIVITY_TIMEOUT:
-                self.data.timeout = True
                 logging.warning('Inactivity timeout')
-                return True
-        return False
+                self.data.timeout = True
+        return self.data.timeout

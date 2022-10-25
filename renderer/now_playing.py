@@ -60,14 +60,14 @@ class NowPlaying(Renderer):
                            self.matrix.height,
                            Position[self.coords['album_art']['position']['x'].upper()],
                            Position[self.coords['album_art']['position']['y'].upper()])
-        xo = self.coords['album_art']['offset']['x']
-        yo = self.coords['album_art']['offset']['y']
-        self.canvas.paste(self.album_art, (x + xo, y + yo))
+        x += self.coords['album_art']['offset']['x']
+        y += self.coords['album_art']['offset']['y']
+        self.canvas.paste(self.album_art, (x, y))
 
     def render_title(self):
         x = self.coords['title']['x']
         y = self.coords['title']['y']
-        text_off_screen = off_screen((self.matrix.width - x), self.layout.primary_font.getsize(self.track.name)[0])
+        text_off_screen = off_screen((self.matrix.width - x), self.layout.primary_font.getlength(self.track.name))
         if text_off_screen:
             self.scrolling = True
             self.scroll_text(self.track.name, self.primary_color, self.layout.primary_font, self.background, (x, y))
@@ -83,7 +83,7 @@ class NowPlaying(Renderer):
         text_off_screen = off_screen((self.matrix.width - x),
                                      self.layout.secondary_font.getsize(self.track.artist)[0])
         if text_off_screen:
-            artist = multiline_text(artist, ((self.matrix.width - x) // self.layout.secondary_font.getsize('A')[0]))
+            artist = multiline_text(artist, ((self.matrix.width - x) // self.layout.secondary_font.getlength('A')))
         self.draw.text((x, y),
                        artist,
                        self.secondary_color,
@@ -95,8 +95,7 @@ class NowPlaying(Renderer):
         self.scrolling = False
         time.sleep(2.5)
         self.album_art = load_image_url(self.track.album_art_url,
-                                        (self.coords['album_art']['size']['width'],
-                                         self.coords['album_art']['size']['height']))
+                                        self.coords['album_art']['size'])
         self.background = get_background_color(self.album_art)
 
         if is_background_light(self.background):
