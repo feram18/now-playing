@@ -6,18 +6,12 @@
 	"coords": {
 		"loading": {
 			"image": {
-				"size": {
-					"width": 120,
-					"height": 45
-				}
+				"size": [120, 45]
 			}
 		},
 		"now_playing": {
 			"album_art": {
-				"size": {
-					"width": 40,
-					"height": 40
-				},
+				"size": [40, 40],
 				"position": {
 					"x": "left",
 					"y": "center"
@@ -41,10 +35,7 @@
 		},
 		"user": {
 			"code": {
-				"size": {
-					"width": 120,
-					"height": 30
-				},
+				"size": [120, 30],
 				"position": {
 					"x": "center",
 					"y": "center"
