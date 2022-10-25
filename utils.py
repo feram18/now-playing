@@ -41,11 +41,11 @@ class Direction(Enum):
 
 
 class Position(Enum):
-    LEFT = auto()
-    TOP = auto()
-    RIGHT = auto()
-    BOTTOM = auto()
-    CENTER = auto()
+    LEFT = 'left'
+    TOP = 'top'
+    RIGHT = 'right'
+    BOTTOM = 'bottom'
+    CENTER = 'center'
 
 
 def read_json(filename: str) -> dict:
