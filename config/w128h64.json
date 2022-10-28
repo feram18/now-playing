@@ -17,17 +17,17 @@
 					"y": "center"
 				},
 				"offset": {
-					"x": 2,
+					"x": 1,
 					"y": 0
 				}
 			},
 			"title": {
-				"x": 44,
+				"x": 45,
 				"y": 20
 			},
 			"artist": {
 				"position": {
-					"x": 44,
+					"x": 45,
 					"y": 35
 				},
 				"line_spacing": 0
