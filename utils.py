@@ -10,7 +10,7 @@ from typing import Tuple
 import numpy as np
 import requests
 from PIL import ImageFont, Image
-from rgbmatrix import RGBMatrixOptions
+from RGBMatrixEmulator import RGBMatrixOptions
 from sklearn.cluster import KMeans
 
 
@@ -79,7 +79,7 @@ def off_screen(canvas_width: int, text_size: int) -> bool:
     :param text_size: (int) Text size in pixels
     :return: off-screen: (bool)
     """
-    return text_size > canvas_width
+    return text_size - 1 > canvas_width
 
 
 def load_image(filename: str,
