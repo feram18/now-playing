@@ -4,6 +4,9 @@ app.ini
 # Spotipy Cache
 .cache
 
+# Dev Misc
+emulator_config.json
+
 # Logs
 *.log
 
