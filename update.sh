@@ -10,9 +10,7 @@ function clean() {
 function updateRepository() {
   printf "Updating repository...\n"
   git reset --hard
-  git fetch --tags
-  tag="$(git describe --abbrev=0)"
-  git checkout tags/"$tag"
+  git pull origin master
 }
 
 function installDependencies(){
@@ -25,7 +23,7 @@ function main() {
   updateRepository
   installDependencies
 
-  chmod +x install.sh update.sh
+  chmod +x update.sh
 
   echo "$(tput setaf 2)Update completed$(tput setaf 7)"
 }
