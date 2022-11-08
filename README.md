@@ -6,4 +6,5 @@
     <img src="assets/img/demo/demo-a.png" width="75%" />
     <img src="assets/img/demo/demo-b.png" width="75%" />
     <img src="assets/img/demo/demo-c.png" width="75%" />
+    <img src="assets/img/demo/demo-d.png" width="75%" />
 </p>
