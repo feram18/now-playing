@@ -2,7 +2,7 @@ import configparser
 import logging
 import sys
 
-from spotipy.oauth2 import SpotifyOAuth, SpotifyOauthError
+from spotipy.oauth2 import SpotifyOauthError, SpotifyPKCE
 
 config = configparser.ConfigParser()
 config.read('app.ini')
@@ -34,18 +34,17 @@ def valid() -> bool:
     return True
 
 
-def oauth() -> SpotifyOAuth:
+def oauth() -> SpotifyPKCE:
     """
     Authorization Code Flow for Spotify's OAuth implementation.
-    :return: SpotifyOAuth instance
+    :return: SpotifyPKCE instance
     """
     if valid():
         try:
-            return SpotifyOAuth(client_id=CLIENT_ID,
-                                client_secret=CLIENT_SECRET,
-                                redirect_uri=REDIRECT_URI,
-                                scope=','.join(SCOPES),
-                                open_browser=False)
+            return SpotifyPKCE(client_id=CLIENT_ID,
+                               redirect_uri=REDIRECT_URI,
+                               scope=','.join(SCOPES),
+                               open_browser=False)
         except SpotifyOauthError:
             logging.exception('Authorization could not be completed')
             sys.exit(1)
