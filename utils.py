@@ -10,7 +10,7 @@ from typing import Tuple
 import numpy as np
 import requests
 from PIL import ImageFont, Image
-from RGBMatrixEmulator import RGBMatrixOptions
+from rgbmatrix import RGBMatrixOptions
 from sklearn.cluster import KMeans
 
 
