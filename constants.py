@@ -9,3 +9,5 @@ INACTIVITY_TIMEOUT = 30 * 60  # 30 minutes
 
 # params: background color (hex), code color (name), URI
 SPOTIFY_CODE_URL = 'https://scannables.scdn.co/uri/plain/png/{}/{}/640/{}'
+
+CONFIG_FILE = 'app.ini'

@@ -4,7 +4,6 @@ from dataclasses import dataclass, field
 
 from spotipy import Spotify
 
-from auth import spotify
 from constants import RAPID_REFRESH_RATE, SLOW_REFRESH_RATE
 from model.track import Track
 from model.user import User
@@ -12,34 +11,19 @@ from model.user import User
 
 @dataclass
 class Data:
-    """
-    Data class to fetch Spotify data
+    sp: Spotify
+    user: User = field(init=False)
+    is_playing: bool = False
+    track: Track = None
+    prev_track: Track = None
+    last_updated: float = None
+    refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
+    new_data: bool = False
+    timeout: bool = False
 
-    Attributes:
-        sp (spotipy.Spotify):           Spotify instance
-        user (model.User):              User instance
-        is_playing (bool):              Bool to indicate if user is currently active
-        track (model.Track):            Track currently playing
-        prev_track (model.Track):       Previously played track
-        last_updated (float):            Time data was last updated
-        refresh_rate (int):             Data refresh rate (in seconds)
-        new_data (bool):                Bool to indicate if new data was fetched
-    """
-    def __init__(self):
-        self.sp: Spotify = Spotify(auth_manager=spotify.oauth())
-        self.user: User = field(init=False)
-        self.is_playing: bool = False
-        self.track: Track = None
-        self.prev_track: Track = None
-        self.last_updated: float = field(init=False)
-        self.refresh_rate: int = RAPID_REFRESH_RATE  # change based on activity
-        self.new_data: bool = False
-        self.timeout: bool = False
-        self.initialize()
-
-    def initialize(self):
+    def __post_init__(self):
         logging.debug('Initializing data...')
-        self.get_user()
+        self.user = self.get_user()
         self.new_data = self.update(True)  # force to initialize
 
     def update(self, force: bool = False) -> bool:
@@ -67,16 +51,17 @@ class Data:
             return True  # just initialized
         return False  # no new data
 
-    def get_user(self):
+    def get_user(self) -> User:
         """
         Get user profile information
+        :return: User instance
         """
         me = self.sp.me()
-        self.user = User(me['display_name'],
-                         me['id'],
-                         me['followers']['total'],
-                         me['images'][0]['url'],
-                         me['uri'])
+        return User(me['display_name'],
+                    me['id'],
+                    me['followers']['total'],
+                    me['images'][0]['url'],
+                    me['uri'])
 
     def now_playing(self, track: dict):
         """

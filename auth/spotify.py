@@ -1,11 +1,11 @@
 import configparser
-import logging
-import sys
 
-from spotipy.oauth2 import SpotifyOauthError, SpotifyPKCE
+from spotipy import Spotify, SpotifyOAuth
+
+from constants import CONFIG_FILE
 
 config = configparser.ConfigParser()
-config.read('app.ini')
+config.read(CONFIG_FILE)
 config = config['spotify']
 
 CLIENT_ID = config.get('client_id')
@@ -17,34 +17,13 @@ SCOPES = [
 ]
 
 
-def valid() -> bool:
+def oauth() -> Spotify:
     """
-    Verifies authentication fields were set on config file
-    :return: boolean to indicate validity
+    Create Spotify instance with Spotify's OAuth manager.
+    :return: Spotify instance
     """
-    if not CLIENT_ID:
-        logging.error('Client ID has not been set')
-        return False
-    if not CLIENT_SECRET:
-        logging.error('Client Secret has not been set')
-        return False
-    if not REDIRECT_URI:
-        logging.error('Redirect URI has not been set')
-        return False
-    return True
-
-
-def oauth() -> SpotifyPKCE:
-    """
-    Authorization Code Flow for Spotify's OAuth implementation.
-    :return: SpotifyPKCE instance
-    """
-    if valid():
-        try:
-            return SpotifyPKCE(client_id=CLIENT_ID,
-                               redirect_uri=REDIRECT_URI,
-                               scope=','.join(SCOPES),
-                               open_browser=False)
-        except SpotifyOauthError:
-            logging.exception('Authorization could not be completed')
-            sys.exit(1)
+    return Spotify(oauth_manager=SpotifyOAuth(client_id=config.get('client_id'),
+                                              client_secret=config.get('client_secret'),
+                                              redirect_uri=config.get('redirect_uri'),
+                                              scope=','.join(SCOPES),
+                                              open_browser=False))
