@@ -284,14 +284,14 @@ def args() -> argparse.Namespace:
 
     parser.add_argument('--led-rows',
                         action='store',
-                        help='Display rows. 16 for 16x32, 32 for 32x64, etc. (Default: 32)',
-                        type=int,
-                        default=32)
-    parser.add_argument('--led-cols',
-                        action='store',
-                        help='Display columns. 32 for 16x32, 64 for 32x62, etc. (Default: 64)',
+                        help='Display rows. 16 for 16x32, 32 for 32x64, etc. (Default: 64)',
                         type=int,
                         default=64)
+    parser.add_argument('--led-cols',
+                        action='store',
+                        help='Display columns. 32 for 16x32, 64 for 32x62, etc. (Default: 128)',
+                        type=int,
+                        default=128)
     parser.add_argument('--led-multiplexing',
                         action='store',
                         help='Multiplexing type: 0 = direct; 1 = strip; 2 = checker; 3 = spiral; 4 = Z-strip; '
