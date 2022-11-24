@@ -3,4 +3,4 @@ numpy~=1.21.0
 pillow>=8.2.0
 requests~=2.26
 scikit-learn~=1.1.2
-spotipy~=2.19.0
+spotipy~=2.21.0
