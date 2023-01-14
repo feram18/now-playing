@@ -10,7 +10,7 @@ from spotipy import SpotifyOauthError
 
 from api.data import Data
 from auth.spotify import oauth
-from config.layout import Layout
+from matrix.layout import Layout
 from renderer.loading import Loading
 from renderer.main import MainRenderer
 from utils import led_matrix_options, args

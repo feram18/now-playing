@@ -6,7 +6,7 @@ import multitasking
 from rgbmatrix import RGBMatrix
 from PIL import Image, ImageDraw, ImageFont
 
-from config.layout import Layout
+from matrix.layout import Layout
 from constants import SCROLL_SPEED
 from utils import Direction
 
@@ -19,7 +19,7 @@ class Renderer(ABC):
         matrix (rgbmatrix.RGBMatrix):       RGBMatrix instance
         canvas (PIL.Image):                 Image canvas associated with matrix
         draw (PIL.ImageDraw):               ImageDraw instance
-        layout (config.Layout):              Layout instance
+        layout (matrix.Layout):             Layout instance
 
     Attributes:
         scrolling (bool):                   Boolean to indicate if text is scrolling
