@@ -1,6 +1,7 @@
 import logging
 import time
 from dataclasses import dataclass, field
+from requests.exceptions import ConnectionError
 
 from spotipy import Spotify
 
@@ -47,6 +48,8 @@ class Data:
             except TypeError:
                 self.is_playing = False
                 logging.warning('Stopped playback')
+            except ConnectionError:
+                return self.update(force=True)
             self.refresh_rate = RAPID_REFRESH_RATE if self.is_playing else SLOW_REFRESH_RATE
             return True  # just initialized
         return False  # no new data
