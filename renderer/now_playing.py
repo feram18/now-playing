@@ -67,30 +67,44 @@ class NowPlaying(Renderer):
     def render_title(self):
         x = self.coords['title']['x']
         y = self.coords['title']['y']
-        text_off_screen = off_screen((self.matrix.width - x),
-                                     self.layout.primary_font.getsize(self.track.name)[0])
-        if text_off_screen:
-            self.scrolling = True
-            self.scroll_text(self.track.name, self.primary_color, self.layout.primary_font, self.background, (x, y))
-        else:
-            self.draw.text((x, y), self.track.name, self.primary_color, self.layout.primary_font)
+
+        try:
+            text_off_screen = off_screen((self.matrix.width - x),
+                                         self.layout.primary_font.getsize(self.track.name)[0])
+            if text_off_screen:
+                self.scrolling = True
+                self.scroll_text(self.track.name, self.primary_color, self.layout.primary_font, self.background, (x, y))
+            else:
+                self.draw.text((x, y), self.track.name, self.primary_color, self.layout.primary_font)
+        except UnicodeEncodeError as e:
+            logging.error('Unsupported character', e.reason)
 
     # TODO: Multiple lines could go off-screen
-    # TODO: Long single-word text could go off-screen
     def render_artist(self):
         x = self.coords['artist']['position']['x']
         y = self.coords['artist']['position']['y']
         artist = self.track.artist
-        text_off_screen = off_screen((self.matrix.width - x),
-                                     self.layout.secondary_font.getsize(self.track.artist)[0])
-        if text_off_screen:
-            artist = multiline_text(artist,
-                                    ((self.matrix.width - x) // self.layout.secondary_font.getsize('A')[0]))
-        self.draw.text((x, y),
-                       artist,
-                       self.secondary_color,
-                       self.layout.secondary_font,
-                       spacing=self.coords['artist']['line_spacing'])
+
+        try:
+            text_off_screen = off_screen((self.matrix.width - x),
+                                         self.layout.secondary_font.getsize(self.track.artist)[0])
+            if text_off_screen:
+                if ' ' not in artist:
+                    return self.scroll_text(artist,
+                                            self.secondary_color,
+                                            self.layout.secondary_font,
+                                            self.background,
+                                            (x, y))
+                else:
+                    artist = multiline_text(artist,
+                                            ((self.matrix.width - x) // self.layout.secondary_font.getsize('A')[0]))
+            return self.draw.text((x, y),
+                                  artist,
+                                  self.secondary_color,
+                                  self.layout.secondary_font,
+                                  spacing=self.coords['artist']['line_spacing'])
+        except UnicodeEncodeError as e:
+            logging.error('Unsupported character', e.reason)
 
     def setup(self):
         self.track = self.data.track
