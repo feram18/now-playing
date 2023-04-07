@@ -1,7 +1,13 @@
 {
 	"fonts": {
-		"primary": "assets/fonts/tom-thumb.pil",
-		"secondary": "assets/fonts/tom-thumb.pil"
+		"primary": {
+			"path": "assets/fonts/4x6.ttf",
+			"size": 6
+		},
+		"secondary": {
+			"path": "assets/fonts/4x6.ttf",
+			"size": 6
+		}
 	},
 	"coords": {
 		"loading": {

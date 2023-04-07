@@ -61,14 +61,15 @@ def read_json(filename: str) -> dict:
     logging.error(f"Couldn't find file at {filename}")
 
 
-def load_font(filename: str) -> ImageFont:
+def load_font(filename: str, size: int) -> ImageFont:
     """
     Return ImageFont object from given path.
     :param filename: (str) Location of font file
+    :param size: (int) Font size
     :return: font: (PIL.ImageFont) ImageFont object
     """
     if os.path.isfile(filename):
-        return ImageFont.load(filename)
+        return ImageFont.truetype(filename, size)
     logging.error(f"Couldn't find font {filename}")
 
 

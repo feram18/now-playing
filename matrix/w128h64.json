@@ -1,7 +1,13 @@
 {
 	"fonts": {
-		"primary": "assets/fonts/7x13B.pil",
-		"secondary": "assets/fonts/5x7.pil"
+		"primary": {
+			"path": "assets/fonts/7x13B.ttf",
+			"size": 13
+		},
+		"secondary": {
+			"path": "assets/fonts/5x7.ttf",
+			"size": 7
+		}
 	},
 	"coords": {
 		"loading": {
